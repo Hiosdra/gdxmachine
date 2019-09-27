@@ -1,6 +1,7 @@
 package com.disgraded.gdxmachine.core.api.graphics.utils
 
 import com.badlogic.gdx.utils.NumberUtils
+import kotlin.math.min
 
 class Color {
 
@@ -32,6 +33,9 @@ class Color {
             return Color(Math.random().toFloat(), Math.random().toFloat(), Math.random().toFloat(),
                     Math.random().toFloat())
         }
+
+        private const val MAX_VALUE: Float = 1f
+        private const val MIN_VALUE: Float = 0f
     }
 
     var r : Float = 0f
@@ -59,7 +63,7 @@ class Color {
     }
 
     fun set(r : Float, g : Float, b: Float, a : Float) {
-        if (r > 1f || g > 1f || b > 1f || a > 1f || r < 0f || g < 0f || b < 0f || a < 0f) {
+        if (r > MAX_VALUE || g > MAX_VALUE || b > MAX_VALUE || a > MAX_VALUE || r < MIN_VALUE || g < MIN_VALUE || b < MIN_VALUE || a < MIN_VALUE) {
             throw RuntimeException("Invalid color values")
         }
         this.r = r
@@ -75,5 +79,15 @@ class Color {
 
     fun copy(): Color {
         return Color(r, g, b, a)
+    }
+
+    operator fun plus(other: Color): Color {
+        fun notTooBig(value: Float) = min(value, MAX_VALUE)
+        return Color(
+            r = notTooBig(other.r + this.r),
+            g = notTooBig(other.g + this.g),
+            b = notTooBig(other.b + this.b),
+            a = notTooBig(other.a + this.a)
+        )
     }
 }
